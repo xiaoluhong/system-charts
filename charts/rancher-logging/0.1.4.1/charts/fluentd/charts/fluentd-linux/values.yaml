@@ -1,0 +1,77 @@
+nameOverride: fluentd
+labels: {}
+
+image:
+  repository: rancher/fluentd
+  tag: v0.1.19
+  pullPolicy: IfNotPresent
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 500Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 200Mi
+# env:
+
+command: '["fluentd", "-c", "/fluentd/etc/config/entry/fluent.conf"]'
+
+livenessProbe:
+  enabled: true
+
+annotations: {}
+
+# updateStrategy:
+#   type: RollingUpdate
+
+tolerations:
+  - effect: NoSchedule
+    operator: Exists
+
+nodeSelector: {}
+
+service:
+  type: ClusterIP
+  ports:
+    - name: metric
+      port: 24231
+      targetPort: metric
+
+cluster:
+  dockerRoot: /var/lib/docker
+  ssl: /fluentd/etc/config/ssl
+  custom: /var/lib/rancher/fluentd/etc/config/custom
+  varlogcontainers: /var/log/containers
+  varlogpods: /var/log/pods
+  rkelog: /var/lib/rancher/rke/log
+  customlog: /var/lib/rancher/log-volumes
+  fluentdlog: /var/lib/rancher/fluentd/log
+  libsystemddir: /usr/lib64
+
+container:
+  dockerRoot: /var/lib/docker
+  ssl: /fluentd/etc/config/ssl
+  custom: /fluentd/etc/config/custom
+  config: /fluentd/etc/config/precan
+  entry: /fluentd/etc/config/entry
+  varlogcontainers: /var/log/containers
+  varlogpods: /var/log/pods
+  rkelog: /var/lib/rancher/rke/log
+  customlog: /var/lib/rancher/log-volumes
+  fluentdlog: /fluentd/log
+  libsystemddir: /host/lib
+
+service:
+  ports:
+    - name: metric
+      port: 24231
+      targetPort: metric
+
+configmapReload:
+  name: reloader
+  image:
+    repository: rancher/configmap-reload
+    tag: v0.3.0-rancher2
+    pullPolicy: IfNotPresent
+  resources: {}
