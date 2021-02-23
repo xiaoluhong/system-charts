@@ -82,14 +82,14 @@ exporter-kube-etcd:
     metrics:
       scheme: https
       name: metrics
-      port: 4001
+      port: 2379
       protocol: TCP
   serviceSelectorLabels:
   - "k8s-app=etcd-server"
   insecureSkipVerify: true
-  caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-  certFile: ""
-  keyFile: ""
+  caFile:  /etc/prometheus/secrets/etcd-certs/kube-ca.pem
+  certFile: /etc/prometheus/secrets/etcd-certs/kube-etcd.pem
+  keyFile: /etc/prometheus/secrets/etcd-certs/kube-etcd-key.pem
 
 exporter-kube-scheduler:
   enabled: false
